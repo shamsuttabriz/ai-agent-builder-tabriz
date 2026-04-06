@@ -12,8 +12,8 @@ import {
   DraggableLayer,
   SelectedItem,
   AgentCard,
-  LoadingSpinner,
 } from './components'
+import { Wrench, Save, Sparkles, Bot, ChevronRight, Settings } from 'lucide-react'
 
 // Define the types based on data.json
 interface AgentProfile {
@@ -113,9 +113,10 @@ function App() {
       }
       const jsonData: AgentData = await response.json()
       setData(jsonData)
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching data:', err)
-      setError(err.message || 'Failed to fetch agent data')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch agent data'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -193,115 +194,166 @@ function App() {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-        {/* Header */}
-        <header className="bg-white shadow-md border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                  AI Agent Builder
-                </h1>
-                <p className="text-gray-600 text-sm sm:text-base mt-1">
-                  Design your custom AI personality by dragging blocks
-                </p>
+      <div className="min-h-screen bg-transparent">
+        {/* Professional Header */}
+        <header className="professional-header mb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl shadow-lg">
+                  <Bot className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                    AI Agent Builder
+                  </h1>
+                  <p className="text-blue-100 text-lg mt-2 font-medium">
+                    Create powerful AI agents with drag-and-drop simplicity
+                  </p>
+                </div>
               </div>
-              <button
-                onClick={fetchAPI}
-                disabled={loading}
-                className={`btn-primary flex items-center justify-center gap-2 whitespace-nowrap ${
-                  loading ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Loading...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Reload Data
-                  </>
-                )}
-              </button>
+              <div className="flex items-center gap-4">
+                <div className="hidden sm:flex items-center gap-2 text-blue-100">
+                  <Sparkles className="w-5 h-5" />
+                  <span className="font-medium">Professional AI Tools</span>
+                </div>
+                <button
+                  onClick={fetchAPI}
+                  disabled={loading}
+                  className="colorful-button-primary flex items-center justify-center gap-3 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Loading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      <span>Reload Data</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-start gap-3">
-              <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-              <span>{error}</span>
+            <div className="mb-8 p-6 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 text-red-800 rounded-2xl flex items-start gap-4 shadow-lg">
+              <div className="p-2 bg-red-500 rounded-xl flex-shrink-0">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-2">Error Loading Data</h3>
+                <p className="text-red-700">{error}</p>
+              </div>
             </div>
           )}
 
           {showSaveSuccess && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-start gap-3 animate-pulse">
-              <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span>Agent saved successfully!</span>
+            <div className="mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 text-green-800 rounded-2xl flex items-start gap-4 shadow-lg animate-pulse">
+              <div className="p-2 bg-green-500 rounded-xl flex-shrink-0">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-2">Success!</h3>
+                <p className="text-green-700">Your AI agent has been saved successfully!</p>
+              </div>
             </div>
           )}
 
-          {/* Tab Navigation */}
-          <div className="flex gap-0 border-b-2 border-gray-200 mb-8">
-            <button
-              onClick={() => setActiveTab('build')}
-              className={`px-6 py-3 font-semibold text-sm sm:text-base border-b-2 transition-colors ${
-                activeTab === 'build'
-                  ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Build Agent
-            </button>
-            {savedAgents.length > 0 && (
+          {/* Professional Tab Navigation */}
+          <div className="professional-card p-2 mb-8">
+            <div className="flex gap-0 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-1">
               <button
-                onClick={() => setActiveTab('saved')}
-                className={`px-6 py-3 font-semibold text-sm sm:text-base border-b-2 transition-colors flex items-center gap-2 ${
-                  activeTab === 'saved'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                onClick={() => setActiveTab('build')}
+                className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 font-semibold text-sm sm:text-base rounded-lg transition-all duration-300 ${
+                  activeTab === 'build'
+                    ? 'colorful-accent-blue shadow-xl transform scale-105'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
-                Saved Agents
-                <span className="badge bg-blue-100 text-blue-700 text-xs px-2 py-0.5">
-                  {savedAgents.length}
-                </span>
+                <Wrench className={`w-5 h-5 ${activeTab === 'build' ? 'animate-pulse' : ''}`} />
+                Build Agent
+                {activeTab === 'build' && (
+                  <ChevronRight className="w-4 h-4 ml-auto animate-bounce" />
+                )}
               </button>
-            )}
+              {savedAgents.length > 0 && (
+                <button
+                  onClick={() => setActiveTab('saved')}
+                  className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 font-semibold text-sm sm:text-base rounded-lg transition-all duration-300 relative ${
+                    activeTab === 'saved'
+                      ? 'colorful-accent-purple shadow-xl transform scale-105'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                  }`}
+                >
+                  <Save className={`w-5 h-5 ${activeTab === 'saved' ? 'animate-pulse' : ''}`} />
+                  Saved Agents
+                  <span className={`badge text-xs px-3 py-1 ml-2 font-bold ${
+                    activeTab === 'saved'
+                      ? 'bg-white/20 text-white border-white/30'
+                      : 'colorful-badge-purple'
+                  }`}>
+                    {savedAgents.length}
+                  </span>
+                  {activeTab === 'saved' && (
+                    <ChevronRight className="w-4 h-4 ml-auto animate-bounce" />
+                  )}
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Build Tab */}
           {activeTab === 'build' && (
             <div className="space-y-8">
               {loading ? (
-                <div className="flex justify-center py-12">
-                  <LoadingSpinner />
+                <div className="flex justify-center py-16">
+                  <div className="professional-card p-8 text-center">
+                    <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-2">Loading AI Components</h3>
+                    <p className="text-gray-600">Preparing your agent building tools...</p>
+                  </div>
                 </div>
               ) : !data ? (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">No data loaded.</p>
+                <div className="professional-card p-8 text-center">
+                  <Bot className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">No Data Available</h3>
+                  <p className="text-gray-600">Please reload the data to start building your AI agent.</p>
                 </div>
               ) : (
                 <>
-                  {/* Available Items Grid */}
+                  {/* Professional Available Items Grid */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Skills */}
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900 mb-4">Available Skills</h2>
-                      <p className="text-sm text-gray-600 mb-4">
-                        Drag skills to your agent configuration
-                      </p>
-                      <div className="grid grid-cols-1 gap-3 max-h-96 overflow-y-auto pr-2">
+                    {/* Skills Section */}
+                    <div className="professional-card p-6">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 colorful-accent-blue rounded-2xl shadow-lg">
+                          <Sparkles className="w-7 h-7 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-900">AI Skills Library</h2>
+                          <p className="text-gray-600 font-medium">Drag skills to empower your agent</p>
+                        </div>
+                      </div>
+                      <div className="colorful-drop-zone mb-4">
+                        <div className="text-center py-4">
+                          <Sparkles className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+                          <p className="text-purple-600 font-semibold">Drop Zone Active</p>
+                          <p className="text-sm text-purple-500">Release to add skill</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto custom-scrollbar pr-2">
                         {data.skills.map((skill) => (
                           <DraggableSkill
                             key={skill.id}
@@ -313,15 +365,25 @@ function App() {
                       </div>
                     </div>
 
-                    {/* Personality Layers */}
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                        Personality Layers
-                      </h2>
-                      <p className="text-sm text-gray-600 mb-4">
-                        Drag layers to customize behavior
-                      </p>
-                      <div className="grid grid-cols-1 gap-3 max-h-96 overflow-y-auto pr-2">
+                    {/* Personality Layers Section */}
+                    <div className="professional-card p-6">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="p-3 colorful-accent-purple rounded-2xl shadow-lg">
+                          <Bot className="w-7 h-7 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-900">Personality Layers</h2>
+                          <p className="text-gray-600 font-medium">Shape your agent's character</p>
+                        </div>
+                      </div>
+                      <div className="colorful-drop-zone mb-4">
+                        <div className="text-center py-4">
+                          <Bot className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+                          <p className="text-purple-600 font-semibold">Drop Zone Active</p>
+                          <p className="text-sm text-purple-500">Release to add layer</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto custom-scrollbar pr-2">
                         {data.layers.map((layer) => (
                           <DraggableLayer
                             key={layer.id}
@@ -334,37 +396,55 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Configuration Section */}
-                  <div className="bg-white rounded-xl shadow-lg p-6 lg:p-8 border border-gray-200">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Agent Configuration</h2>
+                  {/* Professional Configuration Section */}
+                  <div className="professional-card p-8">
+                    <div className="flex items-center gap-4 mb-8">
+                      <div className="p-3 colorful-accent-green rounded-2xl shadow-lg">
+                        <Wrench className="w-7 h-7 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-3xl font-bold text-gray-900">Agent Configuration</h2>
+                        <p className="text-gray-600 font-medium text-lg">Fine-tune your AI agent settings</p>
+                      </div>
+                    </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                      {/* Left: Profile Selection */}
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Base Profile</h3>
-                        <div className="space-y-2">
+                      {/* Professional Profile Selection */}
+                      <div className="colorful-section">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl">
+                            <Bot className="w-5 h-5 text-white" />
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-800">Base Profile</h3>
+                        </div>
+                        <div className="space-y-3">
                           {data.agentProfiles.map((profile) => (
                             <button
                               key={profile.id}
                               onClick={() => setSelectedProfile(profile.id)}
-                              className={`w-full text-left p-3 rounded-lg border-2 transition-all ${
+                              className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-lg ${
                                 selectedProfile === profile.id
-                                  ? 'border-green-500 bg-green-50'
-                                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                  ? 'border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 shadow-lg transform scale-105'
+                                  : 'border-gray-200 hover:border-green-300 hover:bg-gradient-to-r hover:from-green-25 hover:to-emerald-25'
                               }`}
                             >
-                              <p className="font-medium text-gray-900">{profile.name}</p>
-                              <p className="text-xs text-gray-600 mt-1">{profile.description}</p>
+                              <p className="font-bold text-gray-900 text-lg">{profile.name}</p>
+                              <p className="text-sm text-gray-600 mt-2 leading-relaxed">{profile.description}</p>
                             </button>
                           ))}
                         </div>
                       </div>
 
-                      {/* Middle: Selected Items */}
+                      {/* Professional Selected Items */}
                       <div className="space-y-6">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-800 mb-3">Selected Skills</h3>
-                          <div className="space-y-2 min-h-[100px]">
+                        <div className="colorful-section">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 colorful-accent-blue rounded-xl">
+                              <Sparkles className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800">Selected Skills</h3>
+                          </div>
+                          <div className="space-y-3 min-h-[120px] colorful-drop-zone">
                             {selectedSkills.length > 0 ? (
                               selectedSkills.map((skillId) => {
                                 const skill = data.skills.find(s => s.id === skillId)
@@ -383,18 +463,23 @@ function App() {
                                 ) : null
                               })
                             ) : (
-                              <p className="text-sm text-gray-400 italic">
-                                Drag skills here or drop them below
-                              </p>
+                              <div className="text-center py-6">
+                                <Sparkles className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                                <p className="text-gray-500 font-medium">No skills selected</p>
+                                <p className="text-sm text-gray-400">Drag skills here to add them</p>
+                              </div>
                             )}
                           </div>
                         </div>
 
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                            Selected Layers
-                          </h3>
-                          <div className="space-y-2 min-h-[100px]">
+                        <div className="colorful-section">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 colorful-accent-purple rounded-xl">
+                              <Bot className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800">Selected Layers</h3>
+                          </div>
+                          <div className="space-y-3 min-h-[120px] colorful-drop-zone">
                             {selectedLayers.length > 0 ? (
                               selectedLayers.map((layerId) => {
                                 const layer = data.layers.find(l => l.id === layerId)
@@ -413,26 +498,31 @@ function App() {
                                 ) : null
                               })
                             ) : (
-                              <p className="text-sm text-gray-400 italic">
-                                Drag layers here or drop them below
-                              </p>
+                              <div className="text-center py-6">
+                                <Bot className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                                <p className="text-gray-500 font-medium">No layers selected</p>
+                                <p className="text-sm text-gray-400">Drag layers here to add them</p>
+                              </div>
                             )}
                           </div>
                         </div>
                       </div>
 
-                      {/* Right: Provider & Summary */}
+                      {/* Professional Provider & Summary */}
                       <div className="space-y-6">
-                        <div>
-                          <label className="block text-lg font-semibold text-gray-800 mb-3">
-                            AI Provider
-                          </label>
+                        <div className="colorful-section">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 colorful-accent-orange rounded-xl">
+                              <Settings className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800">AI Provider</h3>
+                          </div>
                           <select
                             value={selectedProvider}
                             onChange={(e) => setSelectedProvider(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="colorful-select"
                           >
-                            <option value="">-- Select a Provider --</option>
+                            <option value="">-- Choose AI Provider --</option>
                             {['Gemini', 'ChatGPT', 'Kimi', 'Claude', 'DeepSeek'].map((provider) => (
                               <option key={provider} value={provider}>
                                 {provider}
@@ -441,52 +531,65 @@ function App() {
                           </select>
                         </div>
 
-                        <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg border border-blue-200">
-                          <h4 className="font-semibold text-gray-900 mb-2">Configuration Summary</h4>
-                          <dl className="text-sm space-y-1">
-                            <div className="flex justify-between">
-                              <dt className="text-gray-600">Profile:</dt>
-                              <dd className="font-medium text-gray-900">
+                        <div className="colorful-section">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 colorful-accent-teal rounded-xl">
+                              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                              </svg>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800">Configuration Summary</h3>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
+                              <span className="text-gray-600 font-medium">Profile:</span>
+                              <span className="font-bold text-gray-900 text-lg">
                                 {selectedProfileData?.name || 'None'}
-                              </dd>
+                              </span>
                             </div>
-                            <div className="flex justify-between">
-                              <dt className="text-gray-600">Skills:</dt>
-                              <dd className="font-medium text-gray-900">{selectedSkills.length}</dd>
+                            <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
+                              <span className="text-gray-600 font-medium">Skills:</span>
+                              <span className="font-bold text-blue-600 text-lg">{selectedSkills.length}</span>
                             </div>
-                            <div className="flex justify-between">
-                              <dt className="text-gray-600">Layers:</dt>
-                              <dd className="font-medium text-gray-900">{selectedLayers.length}</dd>
+                            <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
+                              <span className="text-gray-600 font-medium">Layers:</span>
+                              <span className="font-bold text-purple-600 text-lg">{selectedLayers.length}</span>
                             </div>
-                            <div className="flex justify-between">
-                              <dt className="text-gray-600">Provider:</dt>
-                              <dd className="font-medium text-gray-900">
+                            <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
+                              <span className="text-gray-600 font-medium">Provider:</span>
+                              <span className="font-bold text-orange-600 text-lg">
                                 {selectedProvider || 'None'}
-                              </dd>
+                              </span>
                             </div>
-                          </dl>
+                          </div>
                         </div>
 
-                        {/* Save Agent */}
-                        <div className="space-y-3">
-                          <input
-                            type="text"
-                            placeholder="Enter agent name..."
-                            value={agentName}
-                            onChange={(e) => setAgentName(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          />
-                          {agentName.trim() && (
-                            <button
-                              onClick={handleSaveAgent}
-                              className="w-full btn-primary flex items-center justify-center gap-2"
-                            >
-                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M7.707 10.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 10-1.414-1.414L11 12.586 7.707 9.293z" />
-                              </svg>
-                              Save Agent
-                            </button>
-                          )}
+                        {/* Professional Save Agent */}
+                        <div className="colorful-section">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 colorful-accent-green rounded-xl">
+                              <Save className="w-5 h-5 text-white" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-800">Save Agent</h3>
+                          </div>
+                          <div className="space-y-4">
+                            <input
+                              type="text"
+                              placeholder="Enter your agent name..."
+                              value={agentName}
+                              onChange={(e) => setAgentName(e.target.value)}
+                              className="colorful-input text-lg"
+                            />
+                            {agentName.trim() && (
+                              <button
+                                onClick={handleSaveAgent}
+                                className="colorful-button-success w-full flex items-center justify-center gap-3 text-lg py-4"
+                              >
+                                <Save className="w-6 h-6" />
+                                Save AI Agent
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -496,26 +599,39 @@ function App() {
             </div>
           )}
 
-          {/* Saved Agents Tab */}
+          {/* Professional Saved Agents Tab */}
           {activeTab === 'saved' && savedAgents.length > 0 && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">Your Saved Agents</h2>
-                <button
-                  onClick={() => {
-                    if (confirm('Are you sure you want to clear all saved agents?')) {
-                      setSavedAgents([])
-                      localStorage.removeItem('savedAgents')
-                      setActiveTab('build')
-                    }
-                  }}
-                  className="btn-danger"
-                >
-                  Clear All
-                </button>
+            <div className="space-y-8">
+              <div className="professional-card p-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 colorful-accent-purple rounded-2xl shadow-lg">
+                      <Save className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-bold text-gray-900">Your Saved Agents</h2>
+                      <p className="text-gray-600 font-medium text-lg">Manage and load your custom AI agents</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (confirm('Are you sure you want to clear all saved agents? This action cannot be undone.')) {
+                        setSavedAgents([])
+                        localStorage.removeItem('savedAgents')
+                        setActiveTab('build')
+                      }
+                    }}
+                    className="colorful-button-danger flex items-center gap-3 px-6 py-3"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Clear All Agents
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {savedAgents.map((agent, index) => (
                   <AgentCard
                     key={`${agent.name}-${index}`}

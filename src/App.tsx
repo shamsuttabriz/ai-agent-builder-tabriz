@@ -56,15 +56,6 @@ function App() {
     localStorage.setItem('savedAgents', JSON.stringify(updatedAgents))
   }
 
-  const [sessionTime, setSessionTime] = useState(0)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSessionTime(prev => prev + 1)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
-
   useEffect(() => {
     // Load saved agents from local storage on component mount
     const saved = localStorage.getItem('savedAgents')
@@ -87,7 +78,7 @@ function App() {
     }, 8000)
 
     return () => clearInterval(analyticsInterval)
-  }, [])
+  }, [agentName])
 
   const fetchAPI = async () => {
     setLoading(true)
@@ -119,12 +110,8 @@ function App() {
   const handleLayerSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const layerId = e.target.value;
     if (layerId && !selectedLayers.includes(layerId)) {
-      selectedLayers.push(layerId)
-      setSelectedLayers(selectedLayers)
+      setSelectedLayers([...selectedLayers, layerId])
     }
-    e.target.value = ""; // Reset dropdown
-
-    fetchAPI()
   }
 
   const handleSkillSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -132,9 +119,6 @@ function App() {
     if (skillId && !selectedSkills.includes(skillId)) {
       setSelectedSkills([...selectedSkills, skillId]);
     }
-    e.target.value = ""; // Reset dropdown
-
-    fetchAPI()
   }
 
   const handleSaveAgent = () => {
@@ -175,9 +159,6 @@ function App() {
           <button onClick={fetchAPI} disabled={loading}>
             {loading ? 'Fetching Configuration...' : 'Reload Configuration Data'}
           </button>
-          <span style={{ fontSize: '0.9rem', color: '#666' }}>
-            Session Active: {sessionTime}s
-          </span>
         </div>
       </header>
 
@@ -204,10 +185,7 @@ function App() {
                   <select
                     id="profile-select"
                     value={selectedProfile}
-                    onChange={(e) => {
-                      setSelectedProfile(e.target.value)
-                      fetchAPI()
-                    }}
+                    onChange={(e) => setSelectedProfile(e.target.value)}
                     style={{ width: '100%', padding: '0.5rem' }}
                   >
                     <option value="">-- Select a Profile --</option>
@@ -369,7 +347,7 @@ function App() {
             </div>
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
               {savedAgents.map((agent, index) => (
-                <div key={index} style={{ padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #b2ebf2', minWidth: '220px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                <div key={`${agent.name}-${index}`} style={{ padding: '1rem', background: 'white', borderRadius: '8px', border: '1px solid #b2ebf2', minWidth: '220px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                   <h3 style={{ marginTop: 0, color: '#006064' }}>{agent.name}</h3>
                   <p style={{ margin: '0.5rem 0', fontSize: '0.9rem' }}>
                     <strong>Profile:</strong> {data?.agentProfiles.find(p => p.id === agent.profileId)?.name || 'None Selected'}
